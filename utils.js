@@ -1,19 +1,18 @@
-import "dotenv/config";
+import 'dotenv/config';
 
 export async function DiscordRequest(endpoint, options) {
   // append endpoint to root API URL
-  const url = "https://discord.com/api/v10/" + endpoint;
+  const url = 'https://discord.com/api/v10/' + endpoint;
   // Stringify payloads
   if (options.body) options.body = JSON.stringify(options.body);
   // Use fetch to make requests
   const res = await fetch(url, {
     headers: {
       Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-      "Content-Type": "application/json; charset=UTF-8",
-      "User-Agent":
-        "DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)",
+      'Content-Type': 'application/json; charset=UTF-8',
+      'User-Agent': 'DiscordBot (https://github.com/discord/discord-example-app, 1.0.0)',
     },
-    ...options,
+    ...options
   });
   // throw API errors
   if (!res.ok) {
@@ -21,10 +20,8 @@ export async function DiscordRequest(endpoint, options) {
     console.log(res.status);
     throw new Error(JSON.stringify(data));
   }
-  // 204 No Content (DELETE etc.) has no body
-  if (res.status === 204) return null;
-  // return parsed JSON so callers get a plain object (e.g. message.id works)
-  return res.json();
+  // return original response
+  return res;
 }
 
 export async function InstallGlobalCommands(appId, commands) {
@@ -33,7 +30,7 @@ export async function InstallGlobalCommands(appId, commands) {
 
   try {
     // This is calling the bulk overwrite endpoint: https://discord.com/developers/docs/interactions/application-commands#bulk-overwrite-global-application-commands
-    await DiscordRequest(endpoint, { method: "PUT", body: commands });
+    await DiscordRequest(endpoint, { method: 'PUT', body: commands });
   } catch (err) {
     console.error(err);
   }
@@ -41,22 +38,7 @@ export async function InstallGlobalCommands(appId, commands) {
 
 // Simple method that returns a random emoji from list
 export function getRandomEmoji() {
-  const emojiList = [
-    "😭",
-    "😄",
-    "😌",
-    "🤓",
-    "😎",
-    "😤",
-    "🤖",
-    "😶‍🌫️",
-    "🌏",
-    "📸",
-    "💿",
-    "👋",
-    "🌊",
-    "✨",
-  ];
+  const emojiList = ['😭','😄','😌','🤓','😎','😤','🤖','😶‍🌫️','🌏','📸','💿','👋','🌊','✨'];
   return emojiList[Math.floor(Math.random() * emojiList.length)];
 }
 
